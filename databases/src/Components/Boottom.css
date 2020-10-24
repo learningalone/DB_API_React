@@ -1,0 +1,16 @@
+.MyButtom{
+    display: inline-block;
+    width: 10rem;
+    margin: 3% 5%;
+    text-decoration: none;
+	-moz-border-radius: 5px;    
+	border-radius: 5px; 
+	text-align: center;
+    padding: 10px;
+  
+    color: #000000;
+    font-size: 100%;
+    font-family: sans-serif ;
+    font-weight: bold;
+    background: rgba(216,216,216,0.4);
+}
