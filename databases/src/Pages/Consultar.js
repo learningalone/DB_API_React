@@ -1,6 +1,7 @@
 import React from 'react'
 //import Formulario from '../Components/Formulario'
 import Boottom from '../Components/Boottom'
+import Loading from '../Components/Loading'
 import './pages.css'
 
 class Consultar extends React.Component {
@@ -20,8 +21,8 @@ class Consultar extends React.Component {
                 </form>
                 </div>
             ),
-            tabla:(``)
-            //data: []
+            tabla:(``),
+            ready: true
         }
     }
 
@@ -29,20 +30,8 @@ class Consultar extends React.Component {
         await this.fetchPacientes()
     } */
     
-    fetchPacientes = async () => {
-        let res = await fetch('http://localhost:7000/api/consultar');
-        let data = await res.json(); 
-
-        this.setState({
-            //data:data,
-            formulario:(``),
-            tabla: this.pintarTabla(data)
-        })
-
-    }
-    
     pintarTabla(data){
-        if(data.length == 0){
+        if(data.length === 0){
             return (``)
         } else {
             return (
@@ -69,24 +58,39 @@ class Consultar extends React.Component {
         } 
     }
 
-    handleSubmit = e => {
+    handleSubmit = async e => {
         e.preventDefault();
-        this.fetchPacientes();
+        try {
+            this.setState({ready:false})
+            let res = await fetch('http://localhost:7000/api/consultar');
+            let data = await res.json(); 
+
+            this.setState({
+                //data:data,
+                formulario:(``),
+                tabla: this.pintarTabla(data),
+                ready:true
+            })
+        } catch (error) {
+            
+        }
     }
 
     render(){
-        return (
-            <div>
-                <nav>
-                    <Boottom link="/insertar" contenido="INSERTAR"/>
-                    <Boottom link="/actualizar" contenido="ACTUALIZAR"/>
-                    <Boottom link="/eliminar" contenido="ELIMINAR"/>
-                </nav>
-                {this.state.formulario}
-                {this.state.tabla}
-
-            </div>
-        )
+        if(this.state.ready){
+            return (
+                <React.Fragment>
+                    <nav>
+                        <Boottom link="/insertar" contenido="INSERTAR"/>
+                        <Boottom link="/actualizar" contenido="ACTUALIZAR"/>
+                        <Boottom link="/eliminar" contenido="ELIMINAR"/>
+                    </nav>
+                    {this.state.formulario}
+                    {this.state.tabla}
+    
+                </React.Fragment>
+            )
+        }else return (<Loading/>)
     }
 }
 
